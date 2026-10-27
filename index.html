@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Palloncini Birichini! – Avventura nel Cielo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Mitr:wght@600&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sun-gold: #ffea00;
+      --bubble-pink: #ff1493;
+      --sky-azure: #40c4ff;
+      --border-fun: #ff9800;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #73d5ff;
+      font-family: 'Fredoka One', 'Nunito', cursive, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #game-stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-image: url('https://i.postimg.cc/pXk8t8jZ/sfondo-palloncini-jpg.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      /* Colori paesaggio ultra vivaci, luminosi e saturi come nell'immagine */
+      filter: saturate(1.35) contrast(1.1) brightness(1.04);
+    }
+
+    /* Leggero bagliore solare */
+    #sun-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 65%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Stelle e Scintille Magiche */
+    .magic-star {
+      position: absolute;
+      pointer-events: none;
+      z-index: 3;
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 8px #fff740);
+      animation: twinkle 3s infinite alternate ease-in-out;
+    }
+    @keyframes twinkle {
+      0% { transform: scale(0.6) rotate(0deg); opacity: 0.3; }
+      50% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+      100% { transform: scale(0.7) rotate(90deg); opacity: 0.4; }
+    }
+
+    /* SCHERMATE */
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2% 4%;
+    }
+
+    /* PULSANTE AUDIO */
+    .audio-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3.5px solid #ffffff;
+      background: linear-gradient(145deg, #ff9100, #ff3d00);
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      z-index: 60;
+      transition: transform 0.15s ease;
+      outline: none;
+    }
+    .audio-btn:hover { transform: scale(1.1); }
+    .audio-btn:active { transform: scale(0.95); }
+
+    /* TITOLO INIZIALE FEDELE ALL'IMMAGINE: PALLONCINI IN GIALLO E BIRICHINI! IN FUCSIA 3D */
+    .title-banner {
+      text-align: center;
+      margin-top: 1.5%;
+      z-index: 20;
+    }
+    .title-banner .title-row {
+      display: block;
+      font-family: 'Fredoka One', cursive, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      line-height: 0.95;
+      animation: floatTitle 3s infinite ease-in-out alternate;
+    }
+    .title-banner .title-palloncini {
+      font-size: clamp(2.8rem, 7.5vw, 6.2rem);
+      color: #fffb00;
+      /* Contorno spesso, gradino 3D arancio/rosso e ombra proiettata */
+      text-shadow:
+        -3px -3px 0 #b32a00,
+         3px -3px 0 #b32a00,
+        -3px  3px 0 #b32a00,
+         3px  3px 0 #b32a00,
+         0px  4px 0 #ff6d00,
+         0px  8px 0 #d84315,
+         0px 12px 0 #942000,
+         0 16px 28px rgba(0, 0, 0, 0.45);
+      filter: drop-shadow(0 6px 12px rgba(255, 110, 0, 0.45));
+    }
+    .title-banner .title-birichini {
+      font-size: clamp(2.8rem, 7.5vw, 6.2rem);
+      color: #ff007f;
+      /* Doppio bordo giallo/arancio, gradino 3D rosso scuro e ombra */
+      text-shadow:
+        -3px -3px 0 #ffd600,
+         3px -3px 0 #ffd600,
+        -3px  3px 0 #ffd600,
+         3px  3px 0 #ffd600,
+         0px  4px 0 #ff5722,
+         0px  8px 0 #c2185b,
+         0px 12px 0 #7b0038,
+         0 18px 30px rgba(0, 0, 0, 0.5);
+      filter: drop-shadow(0 6px 14px rgba(255, 0, 128, 0.45));
+    }
+    @keyframes floatTitle {
+      0% { transform: translateY(0) rotate(-0.5deg); }
+      100% { transform: translateY(-7px) rotate(0.5deg); }
+    }
+
+    /* VETRINA PALLONCINI PERSONIFICATI NELLA SCHERMATA START */
+    .intro-characters-stage {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      height: 38vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(8px, 2.5vw, 24px);
+      z-index: 15;
+    }
+    .intro-balloon-char {
+      position: relative;
+      width: clamp(70px, 11vw, 120px);
+      height: auto;
+      max-height: 30vh;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.35)) saturate(1.2);
+      animation: floatChar 3s infinite ease-in-out alternate;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .intro-balloon-char img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+    .intro-balloon-char:nth-child(1) { animation-delay: 0s; }
+    .intro-balloon-char:nth-child(2) { animation-delay: 0.5s; }
+    .intro-balloon-char:nth-child(3) { animation-delay: 1.1s; }
+    .intro-balloon-char:nth-child(4) { animation-delay: 1.6s; }
+    .intro-balloon-char:nth-child(5) { animation-delay: 2.1s; }
+    .intro-balloon-char:nth-child(6) { animation-delay: 2.6s; }
+
+    @keyframes floatChar {
+      0% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-14px) rotate(2deg) scale(1.04); }
+      100% { transform: translateY(-26px) rotate(4deg); }
+    }
+    .intro-balloon-char:hover {
+      transform: translateY(-18px) scale(1.15) !important;
+    }
+
+    /* PALLONCINI PERSONIFICATI CHE VOLANO NEL CIELO INSIEME AGLI ALTRI */
+    .flying-character-balloon {
+      position: absolute;
+      width: clamp(75px, 11vw, 118px);
+      height: auto;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 24;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.32)) saturate(1.2);
+      transition: transform 0.15s ease;
+      will-change: transform, top;
+    }
+    .flying-character-balloon img {
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+    .char-spin {
+      animation: charTrick 0.65s ease-in-out !important;
+    }
+    @keyframes charTrick {
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.25) rotate(360deg); }
+      100% { transform: scale(1) rotate(720deg); }
+    }
+
+    /* BOTTONE GIOCA STILE PILLOLA ARANCIONE VIVACE */
+    .btn-play-super {
+      position: relative;
+      cursor: pointer;
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      color: #ffffff;
+      padding: 12px 75px;
+      border: 4.5px solid #ffffff;
+      border-radius: 60px;
+      background: linear-gradient(180deg, #ff9100 0%, #ff5722 55%, #e64a19 100%);
+      box-shadow: 
+        0 8px 0 #b71c1c, 
+        0 16px 30px rgba(0, 0, 0, 0.4), 
+        0 0 35px rgba(255, 110, 0, 0.7), 
+        inset 0 4px 6px rgba(255, 255, 255, 0.65);
+      text-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+      letter-spacing: 2px;
+      transition: all 0.12s ease;
+      margin-bottom: 2%;
+      outline: none;
+      z-index: 30;
+    }
+    .btn-play-super:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 
+        0 12px 0 #b71c1c, 
+        0 20px 34px rgba(0, 0, 0, 0.5), 
+        0 0 50px rgba(255, 145, 0, 0.95);
+    }
+    .btn-play-super:active {
+      transform: translateY(6px) scale(0.97);
+      box-shadow: 0 2px 0 #b71c1c, 0 6px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    /* HUD E PUNTI */
+    .hud-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2%;
+      z-index: 30;
+    }
+    .hud-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 248, 225, 0.94));
+      padding: 6px 20px;
+      border-radius: 40px;
+      border: 3.5px solid #ffb300;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    .hud-ico { font-size: 1.4rem; }
+    .hud-txt { font-size: clamp(0.8rem, 1.3vw, 1.1rem); color: #e65100; font-weight: 900; }
+    .hud-num { font-size: clamp(1.3rem, 2.2vw, 1.9rem); color: #0288d1; margin-left: 4px; }
+
+    /* TABELLONE OBIETTIVO DEL ROUND */
+    .target-board {
+      position: relative;
+      background: linear-gradient(145deg, #ffffff, #fffde7);
+      border: 4.5px solid #ff9100;
+      border-radius: 28px;
+      padding: 8px 32px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 30px rgba(255, 179, 0, 0.5);
+      text-align: center;
+      margin: 0 auto;
+      z-index: 30;
+    }
+    .target-board::before {
+      content: '🌈 MISSIONE VOLANTE 🎈';
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #ff4081, #7c4dff);
+      color: #fff;
+      font-size: clamp(0.65rem, 1.1vw, 0.85rem);
+      padding: 2px 14px;
+      border-radius: 20px;
+      border: 2px solid #ffffff;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .target-caption {
+      font-size: clamp(0.85rem, 1.4vw, 1.15rem);
+      color: #0288d1;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+    .target-digit {
+      font-size: clamp(2.4rem, 5.2vw, 3.8rem);
+      color: #ff3d00;
+      text-shadow: 0 3px 0 #ba000d, 0 6px 14px rgba(255, 61, 0, 0.35);
+      display: block;
+      line-height: 1.05;
+      animation: pulseTarget 1.4s infinite alternate ease-in-out;
+    }
+    @keyframes pulseTarget {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); filter: drop-shadow(0 0 12px #ff9100); }
+    }
+
+    #feedback-line {
+      min-height: 1.6rem;
+      font-size: clamp(0.95rem, 1.6vw, 1.4rem);
+      color: #ffffff;
+      text-align: center;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8), 0 0 14px #ff6f00;
+      z-index: 30;
+      margin-top: 4px;
+    }
+
+    /* AREA DI VOLO DEI PALLONCINI DA SCOPPIARE */
+    #flight-arena {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 25;
+    }
+
+    /* PALLONCINO NORMALE CON NUMERO */
+    .flying-balloon {
+      position: absolute;
+      width: clamp(95px, 14vw, 150px);
+      height: clamp(130px, 19vw, 200px);
+      pointer-events: auto;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.4));
+      will-change: transform, top;
+      transition: transform 0.12s ease;
+    }
+    .flying-balloon:active {
+      transform: scale(0.92);
+    }
+
+    .balloon-body-svg {
+      width: 100%;
+      height: 85%;
+      display: block;
+      pointer-events: none;
+    }
+
+    .flying-balloon-val {
+      position: absolute;
+      top: 36%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Fredoka One', cursive, sans-serif;
+      font-size: clamp(2.3rem, 4.4vw, 3.6rem);
+      color: #ffffff;
+      text-shadow: 
+        0 3px 0 rgba(0, 0, 0, 0.5),
+        0 6px 14px rgba(0, 0, 0, 0.7);
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* EFFETTI SCOPPIO E SBAGLIATO */
+    .pop-effect {
+      animation: popExplode 0.32s forwards cubic-bezier(0.1, 0.8, 0.3, 1) !important;
+      pointer-events: none !important;
+    }
+    @keyframes popExplode {
+      0% { transform: scale(1); opacity: 1; }
+      40% { transform: scale(1.35); opacity: 0.9; }
+      100% { transform: scale(2.2); opacity: 0; filter: blur(6px); }
+    }
+
+    .shake-effect {
+      animation: shakeBalloon 0.45s ease-in-out !important;
+    }
+    @keyframes shakeBalloon {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-14px) rotate(-8deg); }
+      40%, 80% { transform: translateX(14px) rotate(8deg); }
+    }
+
+    /* CORIANDOLI */
+    .confetti {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 70;
+      animation: blastConfetti 0.75s forwards ease-out;
+    }
+    @keyframes blastConfetti {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1.2); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) rotate(720deg) scale(0); opacity: 0; }
+    }
+
+    /* CARD VITTORIA FINALE */
+    .victory-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 248, 225, 0.96));
+      border: 6px solid #ffd600;
+      border-radius: 36px;
+      padding: 4% 6%;
+      text-align: center;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35), 0 0 50px rgba(255, 214, 0, 0.55);
+      max-width: 620px;
+      position: relative;
+    }
+    .victory-title {
+      font-size: clamp(2.3rem, 4.8vw, 3.8rem);
+      color: #ff9100;
+      text-shadow: 0 3px 0 #d84315, 0 6px 16px rgba(255, 145, 0, 0.4);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Traccia audio: Balloons in the sky -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="https://cdn.dbimg.app/CpieiZUA.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="game-stage">
+    <div id="sun-glow"></div>
+
+    <!-- Scintille magiche nel cielo -->
+    <div class="magic-star" style="top: 15%; left: 14%; animation-delay: 0s;">✨</div>
+    <div class="magic-star" style="top: 25%; left: 86%; animation-delay: 1.1s;">⭐</div>
+    <div class="magic-star" style="top: 55%; left: 20%; animation-delay: 1.9s;">✨</div>
+    <div class="magic-star" style="top: 48%; left: 78%; animation-delay: 0.6s;">⭐</div>
+
+    <!-- Pulsante Toggle Musica On/Off in alto a destra -->
+    <button id="btn-sound-toggle" class="audio-btn" type="button" title="Musica Allegra On/Off" onclick="toggleMusic()">
+      <span id="sound-icon">🔊</span>
+    </button>
+
+    <!-- 1. SCHERMATA INIZIALE CON SCRITTA A DUE COLORI E VETRINA PERSONAGGI -->
+    <div id="start-screen" class="screen">
+      <div class="title-banner">
+        <span class="title-row title-palloncini">PALLONCINI</span>
+        <span class="title-row title-birichini">BIRICHINI!</span>
+      </div>
+
+      <!-- Vetrina con tutti i palloncini personificati che fluttuano felici -->
+      <div class="intro-characters-stage" id="intro-characters-stage">
+        <div class="intro-balloon-char" title="Palloncino Rosa">
+          <img src="https://i.postimg.cc/xd5HKHsf/pinkballoon-png.png" alt="Rosa">
+        </div>
+        <div class="intro-balloon-char" title="Palloncino Blu">
+          <img src="https://i.postimg.cc/N0s2fFQS/blueballoon-png.png" alt="Blu">
+        </div>
+        <div class="intro-balloon-char" title="Palloncino Giallo">
+          <img src="https://i.postimg.cc/Dzx5Pm6L/yellowballoon-png.png" alt="Giallo">
+        </div>
+        <div class="intro-balloon-char" title="Palloncino Verde">
+          <img src="https://i.postimg.cc/ZRgcXg1d/greenballoon-png.png" alt="Verde">
+        </div>
+        <div class="intro-balloon-char" title="Palloncino Lilla">
+          <img src="https://i.postimg.cc/kg9crWhp/lilacballoon-png.png" alt="Lilla">
+        </div>
+        <div class="intro-balloon-char" title="Palloncino Arancione">
+          <img src="https://i.postimg.cc/xCkGG5cf/orangeballoon-png.png" alt="Arancione">
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-play-super" type="button" onclick="startGame()">GIOCA!</button>
+    </div>
+
+    <!-- 2. SCHERMATA DI GIOCO -->
+    <div id="game-screen" class="screen" style="display: none; pointer-events: none;">
+      <!-- Barra HUD Superiore -->
+      <div class="hud-bar" style="pointer-events: auto;">
+        <div class="hud-card">
+          <span class="hud-ico">⭐</span>
+          <span class="hud-txt">Punti:</span>
+          <span id="score-val" class="hud-num">0</span>
+        </div>
+        <div class="hud-card">
+          <span class="hud-ico">🎈</span>
+          <span class="hud-txt">Livello:</span>
+          <span id="level-val" class="hud-num">1 / 20</span>
+        </div>
+      </div>
+
+      <!-- Tabellone Obiettivo: Mostra il numero da scoppiare -->
+      <div class="target-board" style="pointer-events: auto;">
+        <div class="target-caption">Fai scoppiare il palloncino con il numero:</div>
+        <span id="target-number" class="target-digit">5</span>
+      </div>
+
+      <!-- Testo di incoraggiamento -->
+      <div id="feedback-line" style="pointer-events: auto;">I palloncini stanno salendo verso il cielo! Acchiappalo prima che scappi! 🎈</div>
+
+      <!-- Spazio vuoto centrale per lasciare completamente libera la scena di volo -->
+      <div style="flex: 1;"></div>
+    </div>
+
+    <!-- Arena di Volo per tutti i palloncini e i personaggi in volo dinamico -->
+    <div id="flight-arena"></div>
+
+    <!-- 3. SCHERMATA FINALE VITTORIA -->
+    <div id="end-screen" class="screen" style="display: none;">
+      <div class="victory-card">
+        <h2 class="victory-title">MAGNIFICO! 🎉</h2>
+        
+        <!-- Trio di palloncini festosi finali -->
+        <div style="display: flex; justify-content: center; gap: 15px; margin: 10px 0;">
+          <img src="https://i.postimg.cc/N0s2fFQS/blueballoon-png.png" style="width: 70px; height: auto;" alt="Blu">
+          <img src="https://i.postimg.cc/Dzx5Pm6L/yellowballoon-png.png" style="width: 80px; height: auto;" alt="Giallo">
+          <img src="https://i.postimg.cc/kg9crWhp/lilacballoon-png.png" style="width: 70px; height: auto;" alt="Lilla">
+        </div>
+
+        <p style="font-size: clamp(1.1rem, 2vw, 1.45rem); color: #0288d1; margin-bottom: 16px; font-weight: 800;">
+          Hai acchiappato tutti i numeri volanti con successo!
+        </p>
+        
+        <div class="hud-card" style="display: inline-flex; margin-bottom: 22px;">
+          <span class="hud-ico">🏆</span>
+          <span class="hud-txt">Punteggio Finale:</span>
+          <span id="final-score-val" class="hud-num">20 / 20</span>
+        </div>
+        <br>
+        <button id="btn-restart" class="btn-play-super" type="button" style="margin-bottom: 0;" onclick="startGame()">RIGIOCA</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ========================================================
+       CONFIGURAZIONE PALLONCINI E GRAFICA (PALETTE PIÙ VIVACE)
+       ======================================================== */
+    const balloonPalette = [
+      { name: 'Rosso', top: '#ff334b', mid: '#ff002b', bottom: '#b3001e', light: '#ffa3b0' },
+      { name: 'Blu', top: '#00e5ff', mid: '#0091ea', bottom: '#005cb2', light: '#b3f5fc' },
+      { name: 'Giallo', top: '#fffb00', mid: '#ffd600', bottom: '#ff8f00', light: '#ffffcc' },
+      { name: 'Verde', top: '#00e676', mid: '#00c853', bottom: '#00701a', light: '#b9f6ca' },
+      { name: 'Rosa', top: '#ff1493', mid: '#d81b60', bottom: '#880e4f', light: '#ff80ab' },
+      { name: 'Viola', top: '#d500f9', mid: '#aa00ff', bottom: '#4a148c', light: '#ea80fc' },
+      { name: 'Arancione', top: '#ff9100', mid: '#ff6d00', bottom: '#bf360c', light: '#ffe0b2' }
+    ];
+
+    const mascottePersonificate = [
+      'https://i.postimg.cc/xd5HKHsf/pinkballoon-png.png',
+      'https://i.postimg.cc/N0s2fFQS/blueballoon-png.png',
+      'https://i.postimg.cc/Dzx5Pm6L/yellowballoon-png.png',
+      'https://i.postimg.cc/ZRgcXg1d/greenballoon-png.png',
+      'https://i.postimg.cc/kg9crWhp/lilacballoon-png.png',
+      'https://i.postimg.cc/xCkGG5cf/orangeballoon-png.png'
+    ];
+
+    const totalQuestions = 20;
+    let currentStep = 0;
+    let score = 0;
+    let targetNumber = 0;
+    let isAnsweringBlocked = false;
+    let isMusicPlaying = false;
+
+    /* ANIMAZIONE PALLONCINI VOLANTI IN TEMPO REALE */
+    let activeBalloons = [];
+    let animationFrameId = null;
+
+    /* ELEMENTI DOM */
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const endScreen = document.getElementById('end-screen');
+    const scoreVal = document.getElementById('score-val');
+    const levelVal = document.getElementById('level-val');
+    const targetNumberEl = document.getElementById('target-number');
+    const feedbackLine = document.getElementById('feedback-line');
+    const finalScoreVal = document.getElementById('final-score-val');
+    const bgMusic = document.getElementById('bg-music');
+    const soundIcon = document.getElementById('sound-icon');
+    const flightArena = document.getElementById('flight-arena');
+
+    /* SINTETIZZATORE WEB-AUDIO DINAMICO E BRIOSO */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    // Melodia allegra, briosa e ritmata (xilofono vivace da cartone animato)
+    let synthMusicTimer = null;
+    let melodyStep = 0;
+    const fastMelody = [523.25, 659.25, 783.99, 1046.50, 783.99, 880.00, 659.25, 587.33];
+
+    function playBriskMusicLoop() {
+      if (!isMusicPlaying) return;
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const now = ctx.currentTime;
+        const note = fastMelody[melodyStep % fastMelody.length];
+        melodyStep++;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(note, now);
+
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } catch (e) {}
+
+      synthMusicTimer = setTimeout(playBriskMusicLoop, 190);
+    }
+
+    function playSoundEffect(type) {
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'pop') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.12);
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+          osc.start(now);
+          osc.stop(now + 0.13);
+        } else if (type === 'success') {
+          const arpeggio = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+          arpeggio.forEach((f, idx) => {
+            const sOsc = ctx.createOscillator();
+            const sGain = ctx.createGain();
+            sOsc.type = 'triangle';
+            sOsc.frequency.setValueAtTime(f, now + idx * 0.05);
+            sGain.gain.setValueAtTime(0.18, now + idx * 0.05);
+            sGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.18);
+            sOsc.connect(sGain);
+            sGain.connect(ctx.destination);
+            sOsc.start(now + idx * 0.05);
+            sOsc.stop(now + idx * 0.05 + 0.18);
+          });
+        } else if (type === 'oops') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
+          osc.start(now);
+          osc.stop(now + 0.23);
+        } else if (type === 'giggle') {
+          [659, 880, 1174, 1318].forEach((f, idx) => {
+            const cOsc = ctx.createOscillator();
+            const cGain = ctx.createGain();
+            cOsc.type = 'sine';
+            cOsc.frequency.setValueAtTime(f, now + idx * 0.05);
+            cGain.gain.setValueAtTime(0.14, now + idx * 0.05);
+            cGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.1);
+            cOsc.connect(cGain);
+            cGain.connect(ctx.destination);
+            cOsc.start(now + idx * 0.05);
+            cOsc.stop(now + idx * 0.05 + 0.1);
+          });
+        } else if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(620, now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+          osc.start(now);
+          osc.stop(now + 0.07);
+        }
+      } catch (e) {}
+    }
+
+    /* CONTROLLO MUSICA */
+    function toggleMusic() {
+      if (!isMusicPlaying) {
+        startAudioPlayback();
+      } else {
+        isMusicPlaying = false;
+        soundIcon.textContent = '🔇';
+        if (bgMusic) bgMusic.pause();
+        if (synthMusicTimer) clearTimeout(synthMusicTimer);
+      }
+    }
+
+    function startAudioPlayback() {
+      isMusicPlaying = true;
+      soundIcon.textContent = '🔊';
+      if (bgMusic) {
+        bgMusic.volume = 0.45;
+        bgMusic.play().catch(() => {
+          isMusicPlaying = false;
+          soundIcon.textContent = '🔇';
+        });
+      }
+    }
+
+    /* CREAZIONE PALLONCINO GRAFICO CLASSICO 3D */
+    function createBalloonSVG(color) {
+      const gradId = 'grad-' + Math.random().toString(36).substr(2, 9);
+      return `
+        <svg class="balloon-body-svg" viewBox="0 0 100 135" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="${gradId}" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="${color.light}"/>
+              <stop offset="35%" stop-color="${color.top}"/>
+              <stop offset="75%" stop-color="${color.mid}"/>
+              <stop offset="100%" stop-color="${color.bottom}"/>
+            </radialGradient>
+            <filter id="glow-${gradId}" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="8" stdDeviation="5" flood-color="rgba(0,0,0,0.3)"/>
+            </filter>
+          </defs>
+          <path d="M 50 102 Q 44 116 54 128 T 48 135" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+          <polygon points="46,101 54,101 50,96" fill="${color.mid}" stroke="${color.bottom}" stroke-width="1.5"/>
+          <ellipse cx="50" cy="50" rx="44" ry="49" fill="url(#${gradId})" stroke="#ffffff" stroke-width="3" filter="url(#glow-${gradId})"/>
+          <path d="M 24 24 Q 30 14 44 14" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.75"/>
+          <circle cx="21" cy="32" r="3.5" fill="#ffffff" opacity="0.6"/>
+        </svg>
+      `;
+    }
+
+    /* PARTICELLE DI CORIANDOLI */
+    function spawnConfetti(x, y) {
+      const container = document.getElementById('game-stage');
+      const colors = ['#ff4081', '#ffea00', '#00e5ff', '#76ff03', '#d500f9', '#ff9100'];
+      for (let i = 0; i < 20; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti';
+        const angle = (Math.PI * 2 * i) / 20 + (Math.random() * 0.4);
+        const dist = 60 + Math.random() * 90;
+        const tx = Math.cos(angle) * dist + 'px';
+        const ty = Math.sin(angle) * dist + 'px';
+        
+        piece.style.setProperty('--tx', tx);
+        piece.style.setProperty('--ty', ty);
+        piece.style.left = `${x}px`;
+        piece.style.top = `${y}px`;
+        piece.style.backgroundColor = colors[i % colors.length];
+        
+        container.appendChild(piece);
+        setTimeout(() => piece.remove(), 750);
+      }
+    }
+
+    /* AVVIO PARTITA */
+    function startGame() {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') ctx.resume();
+
+      playSoundEffect('click');
+      startAudioPlayback(); // La musica parte ORA, solo al click su GIOCA!
+
+      score = 0;
+      currentStep = 0;
+      scoreVal.textContent = score;
+
+      startScreen.style.display = 'none';
+      endScreen.style.display = 'none';
+      gameScreen.style.display = 'flex';
+
+      nextRound();
+    }
+
+    /* GESTIONE ROUND CON PALLONCINI IN VOLO DINAMICO E VELOCE */
+    function nextRound() {
+      if (currentStep >= totalQuestions) {
+        showEndScreen();
+        return;
+      }
+
+      currentStep++;
+      levelVal.textContent = `${currentStep} / ${totalQuestions}`;
+      feedbackLine.textContent = "Acchiappa il palloncino con il numero giusto prima che scappi nel cielo! ☁️";
+      feedbackLine.style.color = "#ffffff";
+      isAnsweringBlocked = false;
+
+      // Genera numero bersaglio da 1 a 20
+      targetNumber = Math.floor(Math.random() * 20) + 1;
+      targetNumberEl.textContent = targetNumber;
+
+      // Genera tra 5 e 7 palloncini numerati simultanei
+      const totalBalloonsCount = currentStep <= 5 ? 5 : (currentStep <= 12 ? 6 : 7);
+      const options = new Set();
+      options.add(targetNumber);
+
+      while (options.size < totalBalloonsCount) {
+        let fake = Math.floor(Math.random() * 20) + 1;
+        if (fake !== targetNumber) options.add(fake);
+      }
+
+      const shuffledValues = Array.from(options).sort(() => Math.random() - 0.5);
+
+      // Pulisce l'arena da eventuali palloncini precedenti
+      flightArena.innerHTML = '';
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      activeBalloons = [];
+
+      // Velocità scattante e progressiva
+      const baseSpeed = 2.4 + (currentStep * 0.16);
+
+      const stepPct = 82 / totalBalloonsCount;
+      const xPositions = [];
+      for (let i = 0; i < totalBalloonsCount; i++) {
+        xPositions.push(6 + (i * stepPct) + (Math.random() * (stepPct * 0.45) - (stepPct * 0.22)));
+      }
+      xPositions.sort(() => Math.random() - 0.5);
+
+      // 1. PALLONCINI CON NUMERI
+      shuffledValues.forEach((val, i) => {
+        const balloonEl = document.createElement('div');
+        balloonEl.className = 'flying-balloon';
+
+        const palette = balloonPalette[Math.floor(Math.random() * balloonPalette.length)];
+        balloonEl.innerHTML = `
+          ${createBalloonSVG(palette)}
+          <span class="flying-balloon-val">${val}</span>
+        `;
+
+        const startX = Math.max(4, Math.min(86, xPositions[i]));
+        const startY = window.innerHeight + 10 + (i * 45) + (Math.random() * 30);
+        const swayFreq = 0.024 + Math.random() * 0.025;
+        const swayAmp = 20 + Math.random() * 22;
+        const speed = baseSpeed + (Math.random() * 0.6 - 0.3);
+
+        balloonEl.style.left = `${startX}%`;
+        balloonEl.style.top = `${startY}px`;
+
+        balloonEl.onclick = (e) => handleBalloonClick(val, balloonEl, e);
+
+        flightArena.appendChild(balloonEl);
+
+        activeBalloons.push({
+          el: balloonEl,
+          val: val,
+          isChar: false,
+          xBase: startX,
+          y: startY,
+          speed: speed,
+          swayFreq: swayFreq,
+          swayAmp: swayAmp,
+          tick: Math.random() * 100,
+          popped: false
+        });
+      });
+
+      // 2. TUTTI I PERSONAGGI PERSONIFICATI CHE VOLANO INSIEME
+      mascottePersonificate.forEach((imgSrc, i) => {
+        const charEl = document.createElement('div');
+        charEl.className = 'flying-character-balloon';
+        charEl.innerHTML = `<img src="${imgSrc}" alt="Palloncino Birichino Amico">`;
+
+        const charX = 5 + (i * 15) + (Math.random() * 6 - 3);
+        const charY = window.innerHeight + 25 + (i * 55) + (Math.random() * 50);
+        const charSpeed = (baseSpeed * 0.78) + (Math.random() * 0.5);
+        const swayFreq = 0.016 + Math.random() * 0.02;
+        const swayAmp = 16 + Math.random() * 18;
+
+        charEl.style.left = `${charX}%`;
+        charEl.style.top = `${charY}px`;
+
+        charEl.onclick = (e) => {
+          playSoundEffect('giggle');
+          charEl.classList.add('char-spin');
+          const rect = charEl.getBoundingClientRect();
+          spawnConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+          setTimeout(() => charEl.classList.remove('char-spin'), 650);
+        };
+
+        flightArena.appendChild(charEl);
+
+        activeBalloons.push({
+          el: charEl,
+          val: null,
+          isChar: true,
+          xBase: charX,
+          y: charY,
+          speed: charSpeed,
+          swayFreq: swayFreq,
+          swayAmp: swayAmp,
+          tick: Math.random() * 100,
+          popped: false
+        });
+      });
+
+      startFlightLoop();
+    }
+
+    /* CICLO DI ANIMAZIONE IN VOLO */
+    function startFlightLoop() {
+      function loop() {
+        let anyVisible = false;
+
+        activeBalloons.forEach(b => {
+          if (b.popped) return;
+
+          b.tick++;
+          b.y -= b.speed;
+
+          const offsetX = Math.sin(b.tick * b.swayFreq) * b.swayAmp;
+          b.el.style.top = `${b.y}px`;
+          b.el.style.transform = `translateX(${offsetX}px) rotate(${offsetX * 0.3}deg)`;
+
+          if (b.y > -250) {
+            anyVisible = true;
+          } else {
+            b.y = window.innerHeight + 20 + (Math.random() * 60);
+            b.xBase = 6 + Math.random() * 82;
+            b.el.style.left = `${b.xBase}%`;
+            anyVisible = true;
+          }
+        });
+
+        if (anyVisible) {
+          animationFrameId = requestAnimationFrame(loop);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(loop);
+    }
+
+    /* GESTIONE CLICK SUL PALLONCINO VOLANTE */
+    function handleBalloonClick(val, balloonElement, e) {
+      if (isAnsweringBlocked) return;
+
+      if (val === targetNumber) {
+        isAnsweringBlocked = true;
+        score++;
+        scoreVal.textContent = score;
+
+        playSoundEffect('pop');
+        setTimeout(() => playSoundEffect('success'), 80);
+
+        const rect = balloonElement.getBoundingClientRect();
+        const stageRect = document.getElementById('game-stage').getBoundingClientRect();
+        const popX = rect.left - stageRect.left + rect.width / 2;
+        const popY = rect.top - stageRect.top + rect.height / 3;
+        spawnConfetti(popX, popY);
+
+        balloonElement.classList.add('pop-effect');
+
+        const found = activeBalloons.find(b => b.el === balloonElement);
+        if (found) found.popped = true;
+
+        activeBalloons.filter(b => b.isChar).forEach(charObj => {
+          charObj.el.classList.add('char-spin');
+          setTimeout(() => charObj.el.classList.remove('char-spin'), 650);
+        });
+
+        const complimenti = ["Evviva! Preso! 🎈", "Super Colpo al Volo! 🌈", "Sei Velocissimo! ⭐", "Centro Perfetto! ✨"];
+        feedbackLine.textContent = complimenti[Math.floor(Math.random() * complimenti.length)];
+        feedbackLine.style.color = "#76ff03";
+
+        setTimeout(nextRound, 850);
+      } else {
+        playSoundEffect('oops');
+        balloonElement.classList.add('shake-effect');
+
+        feedbackLine.textContent = "Quello è birichino! Cerca il numero bersaglio! 🎈";
+        feedbackLine.style.color = "#ffeb3b";
+
+        setTimeout(() => {
+          balloonElement.classList.remove('shake-effect');
+        }, 450);
+      }
+    }
+
+    /* SCHERMATA FINALE */
+    function showEndScreen() {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      flightArena.innerHTML = '';
+      gameScreen.style.display = 'none';
+      endScreen.style.display = 'flex';
+      finalScoreVal.textContent = `${score} / ${totalQuestions}`;
+      playSoundEffect('success');
+    }
+  </script>
+</body>
+</html>
